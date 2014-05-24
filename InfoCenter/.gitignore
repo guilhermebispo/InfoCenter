@@ -1,0 +1,14 @@
+/build/
+
+/bin
+/null
+/.settings
+
+*.db
+*.class
+*.war
+*.ear
+.classpath
+/.settings/org.eclipse.jdt.core.prefs
+.project
+/config.properties
