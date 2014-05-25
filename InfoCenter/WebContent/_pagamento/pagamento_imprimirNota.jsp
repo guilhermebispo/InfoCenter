@@ -11,13 +11,14 @@
 %>
 <html>
 <head>
-	<link type="text/css" rel="stylesheet"
-		href="${pageContext.request.contextPath}/css/tabela.css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>[InfoCenter] Detalhamento da Nota Fiscal</title>
+	<link rel="stylesheet" href="/InfoCenter/css/pure.css">
+	<link rel="stylesheet" href="/InfoCenter/css/main-grid.css">
+	<link rel="stylesheet" href="/InfoCenter/css/layouts/pricing.css">
 </head>
 <body>
-	<table width="100%" border="1">
+	<table width="100%" class="pure-table pure-table-bordered">
 		<tr>
 			<td width="200px"><img height="100%" width="100%" alt="InfoCenter" src="/InfoCenter/imagens/logomarca.png"></td>
 			<td align="center"><h4>InfoCenter Ltda. CNPJ: 00.000.000/0001-00</h4>
@@ -26,7 +27,7 @@
 		</tr>
 	</table>
 	<br />
-	<table width="100%" border="1">
+	<table width="100%" class="pure-table pure-table-bordered">
 		<tr>
 			<td colspan="2" align="center"><b>NÚMERO DO PEDIDO: <%= request.getAttribute("numPedido") %></b></td>
 		</tr>
@@ -42,14 +43,16 @@
 		</tr>
 	</table>
 	<br />
-	<table width="100%" border="1">
-		<tr>
-			<th>Código</th>
-			<th>Descrição</th>
-			<th>Qtd</th>
-			<th>Valor (R$)</th>
-			<th>Total (R$)</th>
-		</tr>
+	<table width="100%" class="pure-table pure-table-bordered">
+		<thead>
+			<tr align="center">
+				<th>Código</th>
+				<th>Descrição</th>
+				<th>Qtd</th>
+				<th>Valor (R$)</th>
+				<th>Total (R$)</th>
+			</tr>
+		</thead>
 		<%
 			for (ProdutoDTO produto : produtos) {
 				out.print("<tr>");
@@ -67,11 +70,14 @@
 		</tr>
 		
 	</table>
-	<br><center><input type="button" name="print" value="Imprimir" onClick="javascript:window.print();"></input></center>  
-            <style media="print">  
-                .botao {  
-                display: none;  
-                        }  
-            </style><br>  
+	<br>
+	<center>
+		<input type="button" name="print" class="pure-button pure-input-1-4 pure-button-primary" value="Imprimir" onClick="javascript:window.print();"></input>
+	</center>
+	<style media="print">
+		.botao {
+			display: none;
+		}
+	</style>
 </body>
 </html>

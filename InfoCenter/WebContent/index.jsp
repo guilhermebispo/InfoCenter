@@ -8,7 +8,11 @@
 </head>
 <body>
 	<jsp:include page="_template/template_cabecalho.jsp" />
-	<center><h2>Bem vindos ao melhor site de compras na web!!!</h2></center>
+	<div class="banner">
+	    <h1 class="banner-head">
+	        Bem vindos ao melhor site de compras!<br>
+	    </h1>
+	</div>
 	<jsp:include page="_template/template_rodape.jsp" />
 </body>
 </html>

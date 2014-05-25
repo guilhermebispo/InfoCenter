@@ -1,16 +1,28 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
-	<link type="text/css" rel="stylesheet"
-		href="${pageContext.request.contextPath}/css/tabela.css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>[InfoCenter] Cadastro de Cliente</title>
 	<script type="text/javascript" src="/InfoCenter/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/InfoCenter/js/jquery.validate.js"></script>
 	<script type="text/javascript" src="/InfoCenter/js/jquery.maskedinput-1.3.1.min_.js"></script>
 </head>
+<script>
+$(document).ready(function() {
+    var elements = document.getElementsByTagName("INPUT");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].oninvalid = function(e) {
+            e.target.setCustomValidity("");
+            if (!e.target.validity.valid) {
+                e.target.setCustomValidity("Campo obrigatório!");
+            }
+        };
+        elements[i].oninput = function(e) {
+            e.target.setCustomValidity("");
+        };
+    }
+})
+</script>
 <script type="text/javascript">
 jQuery(function($) {
       $.mask.definitions['~']='[+-]';
@@ -97,20 +109,55 @@ $(document).ready( function() {
 </style>
 <body>
 	<jsp:include page="../_template/template_cabecalho.jsp" />
-	<form id="formCadastroCliente" action="/InfoCenter/cliente" method="post">
-		<input type="hidden" value="cadastrar" name="acao"></input> 
-		Cpf*: <input type="text" id="cpf" name="cpf"></input><br /> 
-		Nome*: <input type="text" id="nome" name="nome"></input><br /> 
-		Email*: <input type="text" id="email" name="email"></input><br />
-		Cep*: <input type="text" id="cep" name="cep"></input><br /> 
-		Data de Nascimento: <input type="text" id="data" name="dtNascimento"></input><br /> 
-		Telefone*: <input type="text" id="telefone" name="telefone"></input><br /> 
-		Endereço*: <input type="text" id="endereco" name="endereco"></input><br /> 
-		Login*: <input type="text" id="login" name="login"></input><br />
-		Senha*: <input type="password" id="senha" name="senha"></input><br /> 
-		Confirmar Senha*: <input type="password" id="confirmarSenha" name="confirmarSenha"></input><br /> 
-		<input type="submit" id="botaoCadastrar" value="Cadastrar"></input>
+	<div class="1-content" align="center">
+	<h3 align="center" class="content-subhead">Cadastro de Cliente</h3>
+	<form class="pure-form pure-form-aligned" id="formCadastroCliente" action="/InfoCenter/cliente" method="post">
+		<input type="hidden" value="cadastrar" name="acao"></input>
+		<div class="pure-control-group">
+			<label for="cpf">CPF(*)</label>
+			<input type="text" id="cpf" name="cpf" class="pure-input-1-4" placeholder="CPF" required></input> 
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Nome(*)</label>
+			<input type="text" id="nome" name="nome" class="pure-input-1-4" placeholder="Nome" required></input>
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">E-mail(*)</label>
+			<input type="text" id="email" name="email" class="pure-input-1-4" placeholder="E-mail" required></input>
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">CEP(*)</label>
+			<input type="text" id="cep" name="cep" class="pure-input-1-4" placeholder="CEP" required></input> 
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Data de Nascimento</label>
+			<input type="text" id="data" name="dtNascimento" class="pure-input-1-4" placeholder="Data de Nascimento"></input> 
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Telefone(*)</label>
+			<input type="text" id="telefone" name="telefone" class="pure-input-1-4" placeholder="Telefone" required></input> 
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Endereço(*)</label>
+			<input type="text" id="endereco" name="endereco" class="pure-input-1-4" placeholder="Endereço" required></input>
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Login(*)</label>
+			<input type="text" id="login" name="login" class="pure-input-1-4" placeholder="Login" required></input>
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Senha(*)</label>
+			<input type="password" id="senha" name="senha" class="pure-input-1-4" placeholder="Senha" required></input> 
+		</div>
+		<div class="pure-control-group">
+			<label for="nome">Confirmar Senha(*)</label>
+			<input type="password" id="confirmarSenha" name="confirmarSenha" class="pure-input-1-4" placeholder="Confirmar senha" required></input>
+		</div>
+		<div class="pure-controls">
+			<button type="submit" class="pure-button pure-input-1-4 pure-button-primary">Cadastrar</button>
+		</div>
 	</form>
+	</div>
 	<jsp:include page="../_template/template_rodape.jsp" />
 </body>
 </html>

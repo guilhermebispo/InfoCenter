@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
 				req.getRequestDispatcher("venda?acao=listar")
 						.forward(req, resp);
 			} else {
-				req.setAttribute("msg_erro", "Usuário ou senha inválidos!");
+				req.setAttribute("msg_erro", "Usu√°rio ou senha inv√°lidos!");
 				req.getRequestDispatcher("login.jsp").forward(req, resp);
 			}
 		} else if (acao.equals("sair")) { 
