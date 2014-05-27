@@ -8,11 +8,11 @@ public class ClienteDTO {
 	private String dt_nascimento;//verificar como faz data 
 	private String endereco;
 	private String email;
-	private String senha; // verificar como faz senha
+	private String senha;
+	private String confirmacaoSenha;
 	private String login;
 	private long idCliente;
 	private boolean administrador;
-
 	
 	public long getIdCliente() {
 		return idCliente;
@@ -94,6 +94,14 @@ public class ClienteDTO {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public String getConfirmacaoSenha() {
+		return confirmacaoSenha;
+	}
+
+	public void setConfirmacaoSenha(String confirmacaoSenha) {
+		this.confirmacaoSenha = confirmacaoSenha;
 	}
 
 	public boolean isAdministrador() {

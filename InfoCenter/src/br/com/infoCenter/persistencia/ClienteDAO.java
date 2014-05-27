@@ -12,86 +12,69 @@ import br.com.infoCenter.infra.ClienteDTO;
 
 public class ClienteDAO {
 
-	public boolean cadastrarCliente(ClienteDTO clienteDTO) {
+	public void cadastrarCliente(ClienteDTO clienteDTO) throws SQLException {
 
 		Connection conn = Conexao.getConexao();
-		try {
 
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement(
-							"INSERT INTO cliente (nome, telefone, cpf, cep, dt_nascimento, endereco, email, login, senha)"
-									+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-							Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement(
+						"INSERT INTO cliente (nome, telefone, cpf, cep, dt_nascimento, endereco, email, login, senha)"
+								+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						Statement.RETURN_GENERATED_KEYS);
 
-			ps.setString(1, clienteDTO.getNome());
-			ps.setString(2, clienteDTO.getTelefone());
-			ps.setString(3, clienteDTO.getCpf());
-			ps.setString(4, clienteDTO.getCep());
-			ps.setString(5, clienteDTO.getDtNascimento());
-			ps.setString(6, clienteDTO.getEndereco());
-			ps.setString(7, clienteDTO.getEmail());
-			ps.setString(8, clienteDTO.getLogin());
-			ps.setString(9, clienteDTO.getSenha());
+		ps.setString(1, clienteDTO.getNome());
+		ps.setString(2, clienteDTO.getTelefone());
+		ps.setString(3, clienteDTO.getCpf());
+		ps.setString(4, clienteDTO.getCep());
+		ps.setString(5, clienteDTO.getDtNascimento());
+		ps.setString(6, clienteDTO.getEndereco());
+		ps.setString(7, clienteDTO.getEmail());
+		ps.setString(8, clienteDTO.getLogin());
+		ps.setString(9, clienteDTO.getSenha());
 
-			ps.execute();
-
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		ps.execute();
 	}
 
-	public boolean excluirCliente(ClienteDTO clienteDTO) {
+	public void excluirCliente(ClienteDTO clienteDTO) throws SQLException {
 		Connection conn = Conexao.getConexao();
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("DELETE FROM cliente WHERE id_cliente = ?");
-			ps.setLong(1, clienteDTO.getIdCliente());
-			ps.execute();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
+
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("DELETE FROM cliente WHERE id_cliente = ?");
+		ps.setLong(1, clienteDTO.getIdCliente());
+		ps.execute();
+		
 	}
 
-	public ClienteDTO getClientePorId(long IdCliente) {
+	public ClienteDTO getClientePorId(long idCliente) throws SQLException {
 		Connection conn = Conexao.getConexao();
 
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("SELECT * FROM cliente WHERE id_cliente =?");
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("SELECT * FROM cliente WHERE id_cliente =?");
 
-			ps.setLong(1, IdCliente);
-			ResultSet rs = ps.executeQuery();
-			ClienteDTO clienteDTO = new ClienteDTO();
-			if (rs.next()) {
-				clienteDTO.setNome(rs.getString("nome"));
-				clienteDTO.setTelefone(rs.getString("telefone"));
-				clienteDTO.setCpf(rs.getString("cpf"));
-				clienteDTO.setCep(rs.getString("cep"));
-				clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
-				clienteDTO.setEndereco(rs.getString("endereco"));
-				clienteDTO.setEmail(rs.getString("email"));
-				clienteDTO.setLogin(rs.getString("login"));
-				clienteDTO.setSenha(rs.getString("senha"));
-				clienteDTO.setIdCliente(rs.getLong("id_cliente"));
-				clienteDTO.setAdministrador(rs.getBoolean("administrador"));
-			}
-			return clienteDTO;
-		} catch (Exception e) {
-			e.printStackTrace();
+		ps.setLong(1, idCliente);
+		ResultSet rs = ps.executeQuery();
+		ClienteDTO clienteDTO = new ClienteDTO();
+		if (rs.next()) {
+			clienteDTO.setNome(rs.getString("nome"));
+			clienteDTO.setTelefone(rs.getString("telefone"));
+			clienteDTO.setCpf(rs.getString("cpf"));
+			clienteDTO.setCep(rs.getString("cep"));
+			clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
+			clienteDTO.setEndereco(rs.getString("endereco"));
+			clienteDTO.setEmail(rs.getString("email"));
+			clienteDTO.setLogin(rs.getString("login"));
+			clienteDTO.setSenha(rs.getString("senha"));
+			clienteDTO.setIdCliente(rs.getLong("id_cliente"));
+			clienteDTO.setAdministrador(rs.getBoolean("administrador"));
 		}
-		return null;
+		return clienteDTO;
 	}
 
-	public boolean alterarCliente(ClienteDTO clienteDTO) {
+	public void alterarCliente(ClienteDTO clienteDTO) throws SQLException {
 		Connection conn = Conexao.getConexao();
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("UPDATE cliente SET nome = ?, telefone = ?, cpf = ?, cep = ?, dt_nascimento = ?, endereco = ?, email = ?, login = ?, senha = ? "
-							+ "WHERE id_cliente = ?");
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("UPDATE cliente SET nome = ?, telefone = ?, cpf = ?, cep = ?, dt_nascimento = ?, endereco = ?, email = ?, login = ?, senha = ? "
+						+ "WHERE id_cliente = ?");
 		
 		ps.setString(1, clienteDTO.getNome());
 		ps.setString(2, clienteDTO.getTelefone());
@@ -105,39 +88,31 @@ public class ClienteDAO {
 		ps.setLong(10, clienteDTO.getIdCliente());
 		
 		ps.execute();
-		return true;
-		
-	} catch (SQLException e) {
-		e.printStackTrace();
-		return false;
 	}
-		}
 
-	public List<ClienteDTO> getClientes() {
+	public List<ClienteDTO> getClientes() throws SQLException {
 		Connection conn = Conexao.getConexao();
 		List<ClienteDTO> clientes = new ArrayList<ClienteDTO>();
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("SELECT * FROM Cliente");
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				ClienteDTO clienteDTO = new ClienteDTO();
-				clienteDTO.setNome(rs.getString("nome"));
-				clienteDTO.setTelefone(rs.getString("telefone"));
-				clienteDTO.setCpf(rs.getString("cpf"));
-				clienteDTO.setCep(rs.getString("cep"));
-				clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
-				clienteDTO.setEndereco(rs.getString("endereco"));
-				clienteDTO.setEmail(rs.getString("email"));
-				clienteDTO.setLogin(rs.getString("login"));
-				clienteDTO.setSenha(rs.getString("senha"));
-				clienteDTO.setIdCliente(rs.getLong("id_cliente"));
-				clienteDTO.setAdministrador(rs.getBoolean("administrador"));
-				clientes.add(clienteDTO);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("SELECT * FROM Cliente");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			ClienteDTO clienteDTO = new ClienteDTO();
+			clienteDTO.setNome(rs.getString("nome"));
+			clienteDTO.setTelefone(rs.getString("telefone"));
+			clienteDTO.setCpf(rs.getString("cpf"));
+			clienteDTO.setCep(rs.getString("cep"));
+			clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
+			clienteDTO.setEndereco(rs.getString("endereco"));
+			clienteDTO.setEmail(rs.getString("email"));
+			clienteDTO.setLogin(rs.getString("login"));
+			clienteDTO.setSenha(rs.getString("senha"));
+			clienteDTO.setIdCliente(rs.getLong("id_cliente"));
+			clienteDTO.setAdministrador(rs.getBoolean("administrador"));
+			clientes.add(clienteDTO);
 		}
+		
 		return clientes;
 	}
 
@@ -173,32 +148,28 @@ public class ClienteDAO {
 		return null;
 	}
 
-	public List<ClienteDTO> getClientesPorNomeCPF(ClienteDTO clientePesquisa) {
+	public List<ClienteDTO> getClientesPorNomeCPF(ClienteDTO clientePesquisa) throws SQLException {
 		Connection conn = Conexao.getConexao();
 		List<ClienteDTO> clientes = new ArrayList<ClienteDTO>();
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("SELECT * FROM Cliente WHERE UPPER(nome) LIKE UPPER(?) AND UPPER(cpf) LIKE UPPER(?)");
-			ps.setString(1, '%' + clientePesquisa.getNome() + '%');
-			ps.setString(2, '%' + clientePesquisa.getCpf() + '%');
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				ClienteDTO clienteDTO = new ClienteDTO();
-				clienteDTO.setNome(rs.getString("nome"));
-				clienteDTO.setTelefone(rs.getString("telefone"));
-				clienteDTO.setCpf(rs.getString("cpf"));
-				clienteDTO.setCep(rs.getString("cep"));
-				clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
-				clienteDTO.setEndereco(rs.getString("endereco"));
-				clienteDTO.setEmail(rs.getString("email"));
-				clienteDTO.setLogin(rs.getString("login"));
-				clienteDTO.setSenha(rs.getString("senha"));
-				clienteDTO.setIdCliente(rs.getLong("id_cliente"));
-				clienteDTO.setAdministrador(rs.getBoolean("administrador"));
-				clientes.add(clienteDTO);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("SELECT * FROM Cliente WHERE UPPER(nome) LIKE UPPER(?) AND UPPER(cpf) LIKE UPPER(?)");
+		ps.setString(1, '%' + clientePesquisa.getNome() + '%');
+		ps.setString(2, '%' + clientePesquisa.getCpf() + '%');
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			ClienteDTO clienteDTO = new ClienteDTO();
+			clienteDTO.setNome(rs.getString("nome"));
+			clienteDTO.setTelefone(rs.getString("telefone"));
+			clienteDTO.setCpf(rs.getString("cpf"));
+			clienteDTO.setCep(rs.getString("cep"));
+			clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
+			clienteDTO.setEndereco(rs.getString("endereco"));
+			clienteDTO.setEmail(rs.getString("email"));
+			clienteDTO.setLogin(rs.getString("login"));
+			clienteDTO.setSenha(rs.getString("senha"));
+			clienteDTO.setIdCliente(rs.getLong("id_cliente"));
+			clienteDTO.setAdministrador(rs.getBoolean("administrador"));
+			clientes.add(clienteDTO);
 		}
 		return clientes;
 
