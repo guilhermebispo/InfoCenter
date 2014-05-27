@@ -28,23 +28,17 @@ public class ClienteServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String acao = req.getParameter("acao");
 		ClienteDAO clienteDao = new ClienteDAO();
-		ClienteDTO clienteDTO = new ClienteDTO();
+		ClienteDTO clienteDTO;
 		
 		if (acao.equals("cadastrar")) {
-			clienteDTO.setNome(req.getParameter("nome"));
-			clienteDTO.setEmail(req.getParameter("email"));
-			clienteDTO.setDtNascimento(req.getParameter("dtNascimento"));
-			clienteDTO.setEndereco(req.getParameter("endereco"));
-			clienteDTO.setCep(req.getParameter("cep"));
-			clienteDTO.setCpf(req.getParameter("cpf"));
-			clienteDTO.setTelefone(req.getParameter("telefone"));
-			clienteDTO.setLogin(req.getParameter("login"));
-			clienteDTO.setSenha(req.getParameter("senha"));
+			
+			clienteDTO = getClienteDTObyRequest(req);
+			
 			if(!validarSenha(req.getParameter("senha"), req.getParameter("confirmarSenha"))){
-				req.setAttribute("msg_erro", "A confirmação da senha não confere!");
+				req.setAttribute("msg_erro", "A confirma√ß√£o da senha n√£o confere!");
 				req.getRequestDispatcher("_cliente/cliente_cadastrar.jsp").forward(req, resp);
 			} else if (clienteDao.existeCpf(clienteDTO.getCpf())) { 
-				req.setAttribute("msg_erro", "O cpf (" + clienteDTO.getCpf() + ") já cadastrado!");
+				req.setAttribute("msg_erro", "O cpf (" + clienteDTO.getCpf() + ") j√° cadastrado!");
 				req.getRequestDispatcher("_cliente/cliente_cadastrar.jsp").forward(req, resp);
 			} else if (clienteDao.cadastrarCliente(clienteDTO)) {
 				resp.sendRedirect("sucesso.jsp");
@@ -57,7 +51,9 @@ public class ClienteServlet extends HttpServlet {
 			req.getRequestDispatcher("_cliente/cliente_listar.jsp").forward(req, resp);
 
 		} else if (acao.equals("excluir")) {
-			clienteDTO.setIdCliente(Long.parseLong(req.getParameter("idCliente")));
+			
+			clienteDTO = getClienteDTObyRequest(req);
+			
 			if (clienteDao.excluirCliente(clienteDTO)) {
 				resp.sendRedirect("sucesso.jsp");
 			} else {
@@ -65,25 +61,18 @@ public class ClienteServlet extends HttpServlet {
 			}
 		
 		} else if (acao.equals("alterar")) {
-			req.setAttribute("cliente", clienteDao.getClientePorId(Long
-					.parseLong(req.getParameter("idCliente"))));
+			
+			clienteDTO = getClienteDTObyRequest(req);
+			req.setAttribute("cliente", clienteDao.getClientePorId(clienteDTO.getIdCliente()));
 			req.getRequestDispatcher("_cliente/cliente_alterar.jsp").forward(req, resp);
 		
 		} else if (acao.equals("concluirAlteracao")) {
-			clienteDTO.setIdCliente(Long.parseLong(req
-					.getParameter("idCliente")));
-			clienteDTO.setNome(req.getParameter("nome"));
-			clienteDTO.setEmail(req.getParameter("email"));
-			clienteDTO.setDtNascimento(req.getParameter("dtNascimento"));
-			clienteDTO.setEndereco(req.getParameter("endereco"));
-			clienteDTO.setCep(req.getParameter("cep"));
-			clienteDTO.setCpf(req.getParameter("cpf"));
-			clienteDTO.setTelefone(req.getParameter("telefone"));
-			clienteDTO.setLogin(req.getParameter("login"));
-			clienteDTO.setSenha(req.getParameter("senha"));
+
+			clienteDTO = getClienteDTObyRequest(req);
+			
 			if(!validarSenha(req.getParameter("senha"), req.getParameter("confirmarSenha"))){
 				req.setAttribute("cliente", clienteDTO);
-				req.setAttribute("msg_erro", "A confirmação da senha não confere!");
+				req.setAttribute("msg_erro", "A confirma√ß√£o da senha n√£o confere!");
 				req.getRequestDispatcher("_cliente/cliente_alterar.jsp").forward(req, resp);
 			} else if (clienteDao.alterarCliente(clienteDTO)) {
 				resp.sendRedirect("sucesso.jsp");
@@ -92,8 +81,9 @@ public class ClienteServlet extends HttpServlet {
 			}
 
 		} else if (acao.equals("consultar")) {
-			clienteDTO.setNome(req.getParameter("nome"));
-			clienteDTO.setCpf(req.getParameter("cpf"));
+			
+			clienteDTO = getClienteDTObyRequest(req);
+			
 			req.setAttribute("clientes", clienteDao.getClientesPorNomeCPF(clienteDTO));
 			req.getRequestDispatcher("_cliente/cliente_listar.jsp").forward(req, resp);
 		}
@@ -105,5 +95,22 @@ public class ClienteServlet extends HttpServlet {
 		} else {
 			return false;
 		}
+	}
+	
+	private ClienteDTO getClienteDTObyRequest (HttpServletRequest req){
+		ClienteDTO clienteDTO = new ClienteDTO();
+		if (req.getParameter("idCliente") != null){
+			clienteDTO.setIdCliente(Long.parseLong(req.getParameter("idCliente")));
+		}
+		clienteDTO.setNome(req.getParameter("nome"));
+		clienteDTO.setEmail(req.getParameter("email"));
+		clienteDTO.setDtNascimento(req.getParameter("dtNascimento"));
+		clienteDTO.setEndereco(req.getParameter("endereco"));
+		clienteDTO.setCep(req.getParameter("cep"));
+		clienteDTO.setCpf(req.getParameter("cpf"));
+		clienteDTO.setTelefone(req.getParameter("telefone"));
+		clienteDTO.setLogin(req.getParameter("login"));
+		clienteDTO.setSenha(req.getParameter("senha"));
+		return clienteDTO;
 	}
 }
