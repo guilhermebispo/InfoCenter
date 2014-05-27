@@ -10,14 +10,18 @@ public class Conexao {
 	public static Connection getConexao() {
 		if (con == null) {
 			try {
-//				Class.forName("org.postgresql.Driver");
-//				con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/infocenter" , "postgres", "postgres");
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection("jdbc:mysql://localhost/infocenter" , "root", "root");
 				System.out.println("Conectou");
+				
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Nao conectou");
+				try{
+					Class.forName("org.postgresql.Driver");
+					con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/infocenter" , "postgres", "postgres");
+				} catch (Exception ex) {
+					e.printStackTrace();
+					System.out.println("Nao conectou");
+				}
 			}
 		}
 
