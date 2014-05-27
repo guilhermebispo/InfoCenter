@@ -1,6 +1,7 @@
 package br.com.infoCenter.apresentacao;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,13 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import br.com.infoCenter.apresentacao.ProdutoServlet;
 import br.com.infoCenter.infra.ProdutoDTO;
+import br.com.infoCenter.negocio.ProdutoBO;
 import br.com.infoCenter.persistencia.ProdutoDAO;
 
 public class ProdutoServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -27,71 +26,73 @@ public class ProdutoServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+
 		String acao = req.getParameter("acao");
-		ProdutoDTO produtoDTO = new ProdutoDTO();
-		ProdutoDAO produtoDao = new ProdutoDAO();
-		if (acao.equals("cadastrar")) {
-			produtoDTO.setCodBarra(Integer.parseInt(req
-					.getParameter("codBarra")));
-			produtoDTO.setDescricao(req.getParameter("descricao"));
-			produtoDTO.setDtFabricacao(req.getParameter("dtFabricacao"));
-			produtoDTO.setMarca(req.getParameter("marca"));
-			produtoDTO.setObs(req.getParameter("observacao"));
-			produtoDTO.setQtdEstoque(Integer.parseInt(req
-					.getParameter("qtdEstoque")));
-			double valor = Double.parseDouble(req.getParameter("valor").replace(".", "").replace(",", ""))/100;
-			produtoDTO.setValorProduto(valor);
-			if (produtoDao.cadastrarProduto(produtoDTO)) {
-				resp.sendRedirect("sucesso.jsp");
-			} else {
-				resp.sendRedirect("erro.jsp");
-			}
-
-		} else if (acao.equals("listar")) {
-			req.setAttribute("produtos", produtoDao.getProdutos());
-			req.getRequestDispatcher("_produto/produto_listar.jsp").forward(req, resp);
-
-		} else if (acao.equals("excluir")) {
-			produtoDTO.setIdProduto(Long.parseLong(req
-					.getParameter("idProduto")));
-			if (produtoDao.excluirProduto(produtoDTO)) {
-				resp.sendRedirect("sucesso.jsp");
-			} else {
-				resp.sendRedirect("erro.jsp");
-			}
-
-		} else if (acao.equals("alterar")) {
-			req.setAttribute("produto", produtoDao
-					.getProdutoPorId(Integer.parseInt(req
-							.getParameter("idProduto"))));
-			req.getRequestDispatcher("_produto/produto_alterar.jsp").forward(req, resp);
-
-		} else if (acao.equals("concluirAlteracao")) {
+		ProdutoDTO produtoDTO;
+		ProdutoBO produtoBO = new ProdutoBO(new ProdutoDAO());
+		
+		try{
 			
-			produtoDTO.setCodBarra(Integer.parseInt(req
-					.getParameter("codBarra")));
-			produtoDTO.setDescricao(req.getParameter("descricao"));
-			produtoDTO.setDtFabricacao(req.getParameter("dtFabricacao"));
-			produtoDTO.setMarca(req.getParameter("marca"));
-			produtoDTO.setObs(req.getParameter("obs"));
-			produtoDTO.setQtdEstoque(Integer.parseInt(req
-					.getParameter("qtdEstoque")));
-			double valor = Double.parseDouble(req.getParameter("valor").replace(".", "").replace(",", ""))/100;
-			produtoDTO.setValorProduto(valor);
-			produtoDTO.setIdProduto(Integer.parseInt(req
-					.getParameter("idProduto")));
-			
-			if (produtoDao.alterarProduto(produtoDTO)) {
+			if (acao.equals("cadastrar")) {
+				
+				produtoDTO = buscarProdutoDTOporRequest(req);
+				produtoBO.cadastrarProduto(produtoDTO);
 				resp.sendRedirect("sucesso.jsp");
-			} else {
-				resp.sendRedirect("erro.jsp");
+	
+			} else if (acao.equals("listar")) {
+				
+				req.setAttribute("produtos", produtoBO.buscarProdutos());
+				req.getRequestDispatcher("_produto/produto_listar.jsp").forward(req, resp);
+	
+			} else if (acao.equals("excluir")) {
+				
+				produtoDTO = buscarProdutoDTOporRequest(req);
+				produtoBO.excluirProduto(produtoDTO);
+				resp.sendRedirect("sucesso.jsp");
+	
+			} else if (acao.equals("alterar")) {
+				
+				produtoDTO = buscarProdutoDTOporRequest(req);
+				req.setAttribute("produto", produtoBO.buscarProdutoPorId(produtoDTO));
+				req.getRequestDispatcher("_produto/produto_alterar.jsp").forward(req, resp);
+	
+			} else if (acao.equals("concluirAlteracao")) {
+				
+				produtoDTO = buscarProdutoDTOporRequest(req);
+				produtoBO.alterarProduto(produtoDTO);
+				resp.sendRedirect("sucesso.jsp");
+
+			} else if (acao.equals("consultar")) {
+				
+				produtoDTO = buscarProdutoDTOporRequest(req);
+				req.setAttribute("produtos", produtoBO.buscarProdutosPorDescMarca(produtoDTO));
+				req.getRequestDispatcher("_produto/produto_listar.jsp").forward(req, resp);
 			}
-		} else if (acao.equals("consultar")) {
-			produtoDTO.setDescricao(req.getParameter("descricao"));
-			produtoDTO.setMarca(req.getParameter("marca"));
 			
-			req.setAttribute("produtos", produtoDao.getProdutosPorDescMarca(produtoDTO));
-			req.getRequestDispatcher("_produto/produto_listar.jsp").forward(req, resp);
+		} catch (SQLException sqlException){
+			resp.sendRedirect("erro.jsp");
 		}
+	}
+	
+	private ProdutoDTO buscarProdutoDTOporRequest(HttpServletRequest req){
+		ProdutoDTO produtoDTO = new ProdutoDTO();
+		if (req.getParameter("codBarra") != null){
+			produtoDTO.setCodBarra(Integer.parseInt(req.getParameter("codBarra")));
+		}
+		produtoDTO.setDescricao(req.getParameter("descricao"));
+		produtoDTO.setDtFabricacao(req.getParameter("dtFabricacao"));
+		produtoDTO.setMarca(req.getParameter("marca"));
+		produtoDTO.setObs(req.getParameter("observacao"));
+		if (req.getParameter("qtdEstoque") != null){
+			produtoDTO.setQtdEstoque(Integer.parseInt(req.getParameter("qtdEstoque")));
+		}
+		if (req.getParameter("valor") != null){
+			double valor = Double.parseDouble(req.getParameter("valor").replace(".", "").replace(",", ""))/100;
+			produtoDTO.setValorProduto(valor);
+		}
+		if (req.getParameter("idProduto") != null){
+			produtoDTO.setIdProduto(Integer.parseInt(req.getParameter("idProduto")));
+		}
+		return produtoDTO;
 	}
 }

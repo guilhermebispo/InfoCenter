@@ -35,7 +35,7 @@ public class ClienteServlet extends HttpServlet {
 		
 			if (acao.equals("cadastrar")) {
 				
-				clienteDTO = getClienteDTObyRequest(req);
+				clienteDTO = buscarClienteDTOPorRequest(req);
 				try{
 					clienteBO.cadastrarCliente(clienteDTO);
 					resp.sendRedirect("sucesso.jsp");
@@ -51,19 +51,19 @@ public class ClienteServlet extends HttpServlet {
 	
 			} else if (acao.equals("excluir")) {
 				
-				clienteDTO = getClienteDTObyRequest(req);
+				clienteDTO = buscarClienteDTOPorRequest(req);
 				clienteBO.excluirCliente(clienteDTO);
 				resp.sendRedirect("sucesso.jsp");
 			
 			} else if (acao.equals("alterar")) {
 				
-				clienteDTO = getClienteDTObyRequest(req);
+				clienteDTO = buscarClienteDTOPorRequest(req);
 				req.setAttribute("cliente", clienteBO.buscarClientePorId(clienteDTO.getIdCliente()));
 				req.getRequestDispatcher("_cliente/cliente_alterar.jsp").forward(req, resp);
 			
 			} else if (acao.equals("concluirAlteracao")) {
 	
-				clienteDTO = getClienteDTObyRequest(req);
+				clienteDTO = buscarClienteDTOPorRequest(req);
 				try{
 					clienteBO.concluirAlteracao(clienteDTO);
 					resp.sendRedirect("sucesso.jsp");
@@ -74,7 +74,7 @@ public class ClienteServlet extends HttpServlet {
 				
 			} else if (acao.equals("consultar")) {
 				
-				clienteDTO = getClienteDTObyRequest(req);
+				clienteDTO = buscarClienteDTOPorRequest(req);
 				req.setAttribute("clientes", clienteBO.buscarClientesPorNomeCPF(clienteDTO));
 				req.getRequestDispatcher("_cliente/cliente_listar.jsp").forward(req, resp);
 			}
@@ -84,7 +84,7 @@ public class ClienteServlet extends HttpServlet {
 		}
 	}
 	
-	private ClienteDTO getClienteDTObyRequest (HttpServletRequest req){
+	private ClienteDTO buscarClienteDTOPorRequest (HttpServletRequest req){
 		ClienteDTO clienteDTO = new ClienteDTO();
 		if (req.getParameter("idCliente") != null){
 			clienteDTO.setIdCliente(Long.parseLong(req.getParameter("idCliente")));

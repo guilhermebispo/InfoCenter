@@ -13,6 +13,22 @@
 	<script type="text/javascript" src="/InfoCenter/js/jquery.maskedinput-1.3.1.min_.js"></script>
 	<script type="text/javascript" src="/InfoCenter/js/jquery.price_format.2.0.min.js"></script>
 </head>
+<script>
+$(document).ready(function() {
+    var elements = document.getElementsByTagName("INPUT");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].oninvalid = function(e) {
+            e.target.setCustomValidity("");
+            if (!e.target.validity.valid) {
+                e.target.setCustomValidity("Campo obrigatório!");
+            }
+        };
+        elements[i].oninput = function(e) {
+            e.target.setCustomValidity("");
+        };
+    }
+})
+</script>
 <script type="text/javascript">
 jQuery(function($) {
     $.mask.definitions['~']='[+-]';
@@ -84,18 +100,45 @@ $(document).ready( function() {
 </style>
 <body>
 	<jsp:include page="../_template/template_cabecalho.jsp" />
-	<form id="formAlteracaoProduto" action="/InfoCenter/produto" method="post">
-		<input type="hidden" value="concluirAlteracao" name="acao"></input> 
-		<input type="hidden" value="<%=produto.getIdProduto()%>" name="idProduto"></input>
-		Código de Barra*: <input type="text" id="codBarra" name="codBarra" value="<%=produto.getCodBarra()%>"></input><br />
-		Descrição*: <input type="text" id="descricacao" name="descricao" value="<%=produto.getDescricao()%>"></input><br /> 
-		Data Fabricação*: <input type="text" id="dtFabricacao" name="dtFabricacao" value="<%=produto.getDtFabricacao()%>"></input><br />
-		Marca*: <input type="text" id="marca" name="marca" value="<%=produto.getMarca()%>"></input><br />
-		Observação: <input type="text" id="observacao" name="observacao" value="<%=produto.getObs()%>"></input><br /> 
-		Qtd Estoque*: <input type="text" id="qtdEstoque" name="qtdEstoque" value="<%=produto.getQtdEstoque()%>"></input><br />
-		Valor*: <input type="text" id="valor" name="valor" value="<%=produto.getValorProduto()%>"></input><br />
-		<input type="submit" value="Alterar"></input>
-	</form>
+	<div class="1-content" align="center">
+		<h3 align="center" class="content-subhead">Alteração de Produto</h3>
+		<form id="formAlteracaoProduto" name="formAlteracaoProduto" class="pure-form pure-form-aligned" action="/InfoCenter/produto" method="post">
+			<input type="hidden" value="concluirAlteracao" name="acao"></input>
+			<input type="hidden" value="<%=produto.getIdProduto()%>" name="idProduto"></input>
+
+			<div class="pure-control-group">
+				<label for="codBarra">Código de Barra(*)</label>
+				<input type="text" id="codBarra" name="codBarra" value="<%=produto.getCodBarra()%>" class="pure-input-1-4" placeholder="Código de Barra" required></input> 
+			</div>
+			<div class="pure-control-group">
+				<label for="descricao">Descrição(*)</label>
+				<input type="text" id="descricao" name="descricao" value="<%=produto.getDescricao()%>" class="pure-input-1-4" placeholder="Descrição" required></input> 
+			</div>
+			<div class="pure-control-group">
+				<label for="dtFabricacao">Fabricação(*)</label>
+				<input type="text" id="dtFabricacao" name="dtFabricacao" value="<%=produto.getDtFabricacao()%>" class="pure-input-1-4" placeholder="Data de Fabricação" required></input>
+			</div>
+			<div class="pure-control-group">
+				<label for="marca">Marca(*)</label>
+				<input type="text" id="marca" name="marca" value="<%=produto.getMarca()%>" class="pure-input-1-4" placeholder="Marca" required></input> 
+			</div>
+			<div class="pure-control-group">
+				<label for="observação">Observação</label>
+				<input type="text" id="observacao" name="observacao" value="<%=produto.getObs()%>" class="pure-input-1-4" placeholder="Observação"></input> 
+			</div>
+			<div class="pure-control-group">
+				<label for="qtdEstoque">Qtd Estoque(*)</label>
+				<input type="text" id="qtdEstoque" name="qtdEstoque" value="<%=produto.getQtdEstoque()%>" class="pure-input-1-4" placeholder="Quantidade de Estoque" required></input> 
+			</div>
+			<div class="pure-control-group">
+				<label for="valor">Valor(*)</label>
+				<input type="text" id="valor" name="valor" value="<%=produto.getValorProduto()%>" class="pure-input-1-4" placeholder="Valor" required></input>
+			</div> 
+			<div class="pure-controls">
+				<button type="submit" class="pure-button pure-input-1-4 pure-button-primary">Alterar</button>
+			</div>
+		</form>
+	</div>
 	<jsp:include page="../_template/template_rodape.jsp" />
 </body>
 </html>

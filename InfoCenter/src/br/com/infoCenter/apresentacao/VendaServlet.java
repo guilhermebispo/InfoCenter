@@ -42,83 +42,88 @@ public class VendaServlet extends HttpServlet {
 				.getAttribute("usuarioLogado");
 		CarrinhoDTO carrinhoDto = new CarrinhoDTO();
 
-		if (acao.equals("listar")) {
-			List<ProdutoDTO> produtos;
-			if (usuarioLogado == null) {
-				produtos = produtoDao.getProdutosPorCliente(-1);
-			} else {
-				produtos = produtoDao.getProdutosPorCliente(usuarioLogado
+		try{
+			
+			if (acao.equals("listar")) {
+				List<ProdutoDTO> produtos;
+				if (usuarioLogado == null) {
+					produtos = produtoDao.getProdutosPorCliente(-1);
+				} else {
+					produtos = produtoDao.getProdutosPorCliente(usuarioLogado
+							.getIdCliente());
+				}
+				req.setAttribute("produtos", produtos);
+				req.getRequestDispatcher("_venda/venda_listar.jsp").forward(req,
+						resp);
+	
+			} else if (usuarioLogado == null) {
+				req.getRequestDispatcher("login.jsp").forward(req, resp);
+	
+			} else if (acao.equals("incluirCarrinho")) {
+				carrinhoDto.setIdProduto(Integer.parseInt(req
+						.getParameter("idProduto")));
+				carrinhoDto.setQtdProduto(1);
+				carrinhoDto.setIdCliente(usuarioLogado.getIdCliente());
+				carrinhoDto.setPago(false);
+				int qtdProduto = carrinhoDAO.getQtdProduto(carrinhoDto);
+	
+				if (qtdProduto >= LIMITE_COMPRA) {
+					req.setAttribute("msg_erro",
+							"O limite de compra ï¿½ de 5 quantidades por produto!");
+					req.setAttribute("produtos", produtoDao
+							.getProdutosPorCliente(usuarioLogado.getIdCliente()));
+					req.getRequestDispatcher("_venda/venda_listar.jsp").forward(
+							req, resp);
+	
+				} else {
+					int qtdEstoque = (produtoDao.getProdutoPorId(carrinhoDto
+							.getIdProduto())).getQtdEstoque();
+					if (qtdProduto >= qtdEstoque) {
+						req.setAttribute("msg_erro", "No momento temos "
+								+ qtdEstoque + " unidade no estoque!");
+						req.setAttribute("produtos",
+								produtoDao.getProdutosPorCliente(usuarioLogado
+										.getIdCliente()));
+						req.getRequestDispatcher("_venda/venda_listar.jsp")
+								.forward(req, resp);
+	
+					} else if (carrinhoDAO.incluirCarrinho(carrinhoDto)) {
+						req.setAttribute("produtos",
+								produtoDao.getProdutosPorCliente(usuarioLogado
+										.getIdCliente()));
+						req.getRequestDispatcher("_venda/venda_listar.jsp")
+								.forward(req, resp);
+					} else {
+						resp.sendRedirect("erro.jsp");
+					}
+				}
+	
+			} else if (acao.equals("listarCarrinho")) {
+				List<ProdutoDTO> produtos = carrinhoDAO.getProdutos(usuarioLogado
 						.getIdCliente());
-			}
-			req.setAttribute("produtos", produtos);
-			req.getRequestDispatcher("_venda/venda_listar.jsp").forward(req,
-					resp);
-
-		} else if (usuarioLogado == null) {
-			req.getRequestDispatcher("login.jsp").forward(req, resp);
-
-		} else if (acao.equals("incluirCarrinho")) {
-			carrinhoDto.setIdProduto(Integer.parseInt(req
-					.getParameter("idProduto")));
-			carrinhoDto.setQtdProduto(1);
-			carrinhoDto.setIdCliente(usuarioLogado.getIdCliente());
-			carrinhoDto.setPago(false);
-			int qtdProduto = carrinhoDAO.getQtdProduto(carrinhoDto);
-
-			if (qtdProduto >= LIMITE_COMPRA) {
-				req.setAttribute("msg_erro",
-						"O limite de compra Ž de 5 quantidades por produto!");
-				req.setAttribute("produtos", produtoDao
-						.getProdutosPorCliente(usuarioLogado.getIdCliente()));
-				req.getRequestDispatcher("_venda/venda_listar.jsp").forward(
-						req, resp);
-
-			} else {
-				int qtdEstoque = (produtoDao.getProdutoPorId(carrinhoDto
-						.getIdProduto())).getQtdEstoque();
-				if (qtdProduto >= qtdEstoque) {
-					req.setAttribute("msg_erro", "No momento temos "
-							+ qtdEstoque + " unidade no estoque!");
-					req.setAttribute("produtos",
-							produtoDao.getProdutosPorCliente(usuarioLogado
-									.getIdCliente()));
-					req.getRequestDispatcher("_venda/venda_listar.jsp")
-							.forward(req, resp);
-
-				} else if (carrinhoDAO.incluirCarrinho(carrinhoDto)) {
-					req.setAttribute("produtos",
-							produtoDao.getProdutosPorCliente(usuarioLogado
-									.getIdCliente()));
-					req.getRequestDispatcher("_venda/venda_listar.jsp")
-							.forward(req, resp);
+				req.setAttribute("produtosCarrinho", produtos);
+				req.setAttribute("valorTotalCompra", getTotalCompra(produtos));
+				req.getRequestDispatcher("_venda/carrinho_listar.jsp").forward(req,
+						resp);
+	
+			} else if (acao.equals("apagarCarrinho")) {
+				carrinhoDto.setIdProduto(Integer.parseInt(req
+						.getParameter("idProduto")));
+				carrinhoDto.setQtdProduto(1);
+				carrinhoDto.setIdCliente(usuarioLogado.getIdCliente());
+				carrinhoDto.setPago(false);
+				carrinhoDto
+						.setDtCompra((new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"))
+								.format(System.currentTimeMillis()));
+				if (carrinhoDAO.apagarCarrinho(carrinhoDto)) {
+					req.getRequestDispatcher("venda?acao=listarCarrinho").forward(
+							req, resp);
 				} else {
 					resp.sendRedirect("erro.jsp");
 				}
 			}
-
-		} else if (acao.equals("listarCarrinho")) {
-			List<ProdutoDTO> produtos = carrinhoDAO.getProdutos(usuarioLogado
-					.getIdCliente());
-			req.setAttribute("produtosCarrinho", produtos);
-			req.setAttribute("valorTotalCompra", getTotalCompra(produtos));
-			req.getRequestDispatcher("_venda/carrinho_listar.jsp").forward(req,
-					resp);
-
-		} else if (acao.equals("apagarCarrinho")) {
-			carrinhoDto.setIdProduto(Integer.parseInt(req
-					.getParameter("idProduto")));
-			carrinhoDto.setQtdProduto(1);
-			carrinhoDto.setIdCliente(usuarioLogado.getIdCliente());
-			carrinhoDto.setPago(false);
-			carrinhoDto
-					.setDtCompra((new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"))
-							.format(System.currentTimeMillis()));
-			if (carrinhoDAO.apagarCarrinho(carrinhoDto)) {
-				req.getRequestDispatcher("venda?acao=listarCarrinho").forward(
-						req, resp);
-			} else {
-				resp.sendRedirect("erro.jsp");
-			}
+		} catch (SQLException sqlException){
+			resp.sendRedirect("erro.jsp");
 		}
 	}
 
