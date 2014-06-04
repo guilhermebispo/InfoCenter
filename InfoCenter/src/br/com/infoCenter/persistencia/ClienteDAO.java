@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.infoCenter.excecao.LoginException;
 import br.com.infoCenter.infra.ClienteDTO;
 
 public class ClienteDAO {
@@ -116,36 +117,34 @@ public class ClienteDAO {
 		return clientes;
 	}
 
-	public ClienteDTO getClientePorLoginSenha(String usuario, String senha) {
+	public ClienteDTO getClientePorLoginSenha(String usuario, String senha) throws SQLException, LoginException {
 		Connection conn = Conexao.getConexao();
 
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("SELECT * FROM cliente WHERE login = ? AND senha = ?");
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("SELECT * FROM cliente WHERE login = ? AND senha = ?");
 
-			ps.setString(1, usuario);
-			ps.setString(2, senha);
-			ResultSet rs = ps.executeQuery();
-			ClienteDTO clienteDTO = new ClienteDTO();
-			rs.next();
-			clienteDTO.setNome(rs.getString("nome"));
-			clienteDTO.setTelefone(rs.getString("telefone"));
-			clienteDTO.setCpf(rs.getString("cpf"));
-			clienteDTO.setCep(rs.getString("cep"));
-			clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
-			clienteDTO.setEndereco(rs.getString("endereco"));
-			clienteDTO.setEmail(rs.getString("email"));
-			clienteDTO.setLogin(rs.getString("login"));
-			clienteDTO.setSenha(rs.getString("senha"));
-			clienteDTO.setIdCliente(rs.getLong("id_cliente"));
-			clienteDTO.setAdministrador(rs.getBoolean("administrador"));
-		
-			return clienteDTO;
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		ps.setString(1, usuario);
+		ps.setString(2, senha);
+		ResultSet rs = ps.executeQuery();
+		ClienteDTO clienteDTO = new ClienteDTO();
+		rs.next();
+		if (rs.getFetchSize()>=0){
+			throw new LoginException("Usuário ou senha inválidos!");
 		}
-		return null;
+		clienteDTO.setNome(rs.getString("nome"));
+		clienteDTO.setTelefone(rs.getString("telefone"));
+		clienteDTO.setCpf(rs.getString("cpf"));
+		clienteDTO.setCep(rs.getString("cep"));
+		clienteDTO.setDtNascimento(rs.getString("dt_nascimento"));
+		clienteDTO.setEndereco(rs.getString("endereco"));
+		clienteDTO.setEmail(rs.getString("email"));
+		clienteDTO.setLogin(rs.getString("login"));
+		clienteDTO.setSenha(rs.getString("senha"));
+		clienteDTO.setIdCliente(rs.getLong("id_cliente"));
+		clienteDTO.setAdministrador(rs.getBoolean("administrador"));
+	
+		return clienteDTO;
+
 	}
 
 	public List<ClienteDTO> getClientesPorNomeCPF(ClienteDTO clientePesquisa) throws SQLException {

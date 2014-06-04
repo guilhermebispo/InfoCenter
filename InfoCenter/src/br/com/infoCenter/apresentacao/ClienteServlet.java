@@ -29,13 +29,12 @@ public class ClienteServlet extends HttpServlet {
 
 		String acao = req.getParameter("acao");
 		ClienteBO clienteBO = new ClienteBO(new ClienteDAO());
-		ClienteDTO clienteDTO;
+		ClienteDTO clienteDTO = buscarClienteDTOPorRequest(req);
 		
 		try{
 		
 			if (acao.equals("cadastrar")) {
 				
-				clienteDTO = buscarClienteDTOPorRequest(req);
 				try{
 					clienteBO.cadastrarCliente(clienteDTO);
 					resp.sendRedirect("sucesso.jsp");
@@ -51,19 +50,16 @@ public class ClienteServlet extends HttpServlet {
 	
 			} else if (acao.equals("excluir")) {
 				
-				clienteDTO = buscarClienteDTOPorRequest(req);
 				clienteBO.excluirCliente(clienteDTO);
 				resp.sendRedirect("sucesso.jsp");
 			
 			} else if (acao.equals("alterar")) {
 				
-				clienteDTO = buscarClienteDTOPorRequest(req);
 				req.setAttribute("cliente", clienteBO.buscarClientePorId(clienteDTO.getIdCliente()));
 				req.getRequestDispatcher("_cliente/cliente_alterar.jsp").forward(req, resp);
 			
 			} else if (acao.equals("concluirAlteracao")) {
 	
-				clienteDTO = buscarClienteDTOPorRequest(req);
 				try{
 					clienteBO.concluirAlteracao(clienteDTO);
 					resp.sendRedirect("sucesso.jsp");
@@ -74,7 +70,6 @@ public class ClienteServlet extends HttpServlet {
 				
 			} else if (acao.equals("consultar")) {
 				
-				clienteDTO = buscarClienteDTOPorRequest(req);
 				req.setAttribute("clientes", clienteBO.buscarClientesPorNomeCPF(clienteDTO));
 				req.getRequestDispatcher("_cliente/cliente_listar.jsp").forward(req, resp);
 			}

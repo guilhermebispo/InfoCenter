@@ -28,14 +28,13 @@ public class ProdutoServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String acao = req.getParameter("acao");
-		ProdutoDTO produtoDTO;
+		ProdutoDTO produtoDTO = buscarProdutoDTOporRequest(req);
 		ProdutoBO produtoBO = new ProdutoBO(new ProdutoDAO());
 		
 		try{
 			
 			if (acao.equals("cadastrar")) {
 				
-				produtoDTO = buscarProdutoDTOporRequest(req);
 				produtoBO.cadastrarProduto(produtoDTO);
 				resp.sendRedirect("sucesso.jsp");
 	
@@ -46,25 +45,21 @@ public class ProdutoServlet extends HttpServlet {
 	
 			} else if (acao.equals("excluir")) {
 				
-				produtoDTO = buscarProdutoDTOporRequest(req);
 				produtoBO.excluirProduto(produtoDTO);
 				resp.sendRedirect("sucesso.jsp");
 	
 			} else if (acao.equals("alterar")) {
 				
-				produtoDTO = buscarProdutoDTOporRequest(req);
 				req.setAttribute("produto", produtoBO.buscarProdutoPorId(produtoDTO));
 				req.getRequestDispatcher("_produto/produto_alterar.jsp").forward(req, resp);
 	
 			} else if (acao.equals("concluirAlteracao")) {
 				
-				produtoDTO = buscarProdutoDTOporRequest(req);
 				produtoBO.alterarProduto(produtoDTO);
 				resp.sendRedirect("sucesso.jsp");
 
 			} else if (acao.equals("consultar")) {
 				
-				produtoDTO = buscarProdutoDTOporRequest(req);
 				req.setAttribute("produtos", produtoBO.buscarProdutosPorDescMarca(produtoDTO));
 				req.getRequestDispatcher("_produto/produto_listar.jsp").forward(req, resp);
 			}
