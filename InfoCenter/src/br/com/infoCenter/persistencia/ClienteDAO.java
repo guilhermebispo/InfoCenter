@@ -127,8 +127,7 @@ public class ClienteDAO {
 		ps.setString(2, senha);
 		ResultSet rs = ps.executeQuery();
 		ClienteDTO clienteDTO = new ClienteDTO();
-		rs.next();
-		if (rs.getFetchSize()>=0){
+		if (!rs.next()){
 			throw new LoginException("Usuário ou senha inválidos!");
 		}
 		clienteDTO.setNome(rs.getString("nome"));

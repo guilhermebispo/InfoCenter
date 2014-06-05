@@ -91,7 +91,7 @@ public class ClienteServlet extends HttpServlet {
 		clienteDTO.setCep(req.getParameter("cep"));
 		clienteDTO.setCpf(req.getParameter("cpf"));
 		clienteDTO.setTelefone(req.getParameter("telefone"));
-		clienteDTO.setLogin(req.getParameter("login"));
+		clienteDTO.setLogin(req.getParameter("usuario"));
 		clienteDTO.setSenha(req.getParameter("senha"));
 		clienteDTO.setConfirmacaoSenha(req.getParameter("confirmarSenha"));
 		return clienteDTO;

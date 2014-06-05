@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
 
 	private ClienteDTO buscarUsuarioDTOPorRequest (HttpServletRequest req){
 		ClienteDTO clienteDTO = new ClienteDTO();
-		clienteDTO.setLogin(req.getParameter("login"));
+		clienteDTO.setLogin(req.getParameter("usuario"));
 		clienteDTO.setSenha(req.getParameter("senha"));
 		return clienteDTO;
 	}

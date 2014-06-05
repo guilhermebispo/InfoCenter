@@ -3,6 +3,7 @@ package br.com.infoCenter.negocio;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.infoCenter.infra.ClienteDTO;
 import br.com.infoCenter.infra.ProdutoDTO;
 import br.com.infoCenter.persistencia.ProdutoDAO;
 
@@ -36,6 +37,13 @@ public class ProdutoBO {
 
 	public List<ProdutoDTO> buscarProdutosPorDescMarca(ProdutoDTO produtoDTO) throws SQLException {
 		return produtoDAO.getProdutosPorDescMarca(produtoDTO);
+	}
+
+	public List<ProdutoDTO> buscarProdutosPorCliente(ClienteDTO usuarioLogado) throws SQLException {
+		if(usuarioLogado == null){
+			return produtoDAO.getProdutos();
+		}
+		return produtoDAO.getProdutosPorCliente(usuarioLogado.getIdCliente());
 	}
 	
 }

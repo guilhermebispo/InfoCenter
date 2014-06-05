@@ -59,37 +59,32 @@ public class ProdutoDAO {
 		return produtoDTOs;
 	}
 
-	public List<ProdutoDTO> getProdutosPorCliente(long idUsuarioLogado) {
+	public List<ProdutoDTO> getProdutosPorCliente(long idUsuarioLogado) throws SQLException {
 		Connection conn = Conexao.getConexao();
 		List<ProdutoDTO> produtoDTOs = new ArrayList<ProdutoDTO>();
-		try {
-			PreparedStatement ps = (PreparedStatement) conn
-					.prepareStatement("SELECT produto.id_produto, codigo_barra, descricao, dt_fabricacao, marca, observacao, qtd_estoque, valor, qtd_produto"
-							+ " FROM produto LEFT OUTER JOIN carrinho ON produto.id_produto = carrinho.id_produto AND id_cliente = ? AND pago = false");
-			ps.setLong(1, idUsuarioLogado);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				ProdutoDTO produtoDTO = new ProdutoDTO();
+		PreparedStatement ps = (PreparedStatement) conn
+				.prepareStatement("SELECT produto.id_produto, codigo_barra, descricao, dt_fabricacao, marca, observacao, qtd_estoque, valor, qtd_produto"
+						+ " FROM produto LEFT OUTER JOIN carrinho ON produto.id_produto = carrinho.id_produto AND id_cliente = ? AND pago = false");
+		ps.setLong(1, idUsuarioLogado);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			ProdutoDTO produtoDTO = new ProdutoDTO();
 
-				produtoDTO.setCodBarra(rs.getInt("codigo_barra"));
-				produtoDTO.setDescricao(rs.getString("descricao"));
-				produtoDTO.setDtFabricacao(rs.getString("dt_fabricacao"));
-				produtoDTO.setMarca(rs.getString("marca"));
-				produtoDTO.setObs(rs.getString("observacao"));
-				produtoDTO.setQtdEstoque(rs.getInt("qtd_estoque"));
-				produtoDTO.setValorProduto(rs.getDouble("valor"));
-				produtoDTO.setIdProduto(rs.getInt("id_produto"));
-				produtoDTO.setQtdItensCarrinho(rs.getInt("qtd_produto"));
-				produtoDTO.setValorTotalProduto(produtoDTO.getValorProduto()
-						* produtoDTO.getQtdItensCarrinho());
+			produtoDTO.setCodBarra(rs.getInt("codigo_barra"));
+			produtoDTO.setDescricao(rs.getString("descricao"));
+			produtoDTO.setDtFabricacao(rs.getString("dt_fabricacao"));
+			produtoDTO.setMarca(rs.getString("marca"));
+			produtoDTO.setObs(rs.getString("observacao"));
+			produtoDTO.setQtdEstoque(rs.getInt("qtd_estoque"));
+			produtoDTO.setValorProduto(rs.getDouble("valor"));
+			produtoDTO.setIdProduto(rs.getInt("id_produto"));
+			produtoDTO.setQtdItensCarrinho(rs.getInt("qtd_produto"));
+			produtoDTO.setValorTotalProduto(produtoDTO.getValorProduto()
+					* produtoDTO.getQtdItensCarrinho());
 
-				produtoDTOs.add(produtoDTO);
-			}
-			return produtoDTOs;
-		} catch (Exception e) {
-			e.printStackTrace();
+			produtoDTOs.add(produtoDTO);
 		}
-		return null;
+		return produtoDTOs;
 	}
 
 	public void excluirProduto(ProdutoDTO produtoDTO) throws SQLException {
