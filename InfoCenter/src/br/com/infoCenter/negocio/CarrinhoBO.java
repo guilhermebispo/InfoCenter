@@ -1,10 +1,11 @@
 package br.com.infoCenter.negocio;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import br.com.infoCenter.excecao.CarrinhoException;
-import br.com.infoCenter.infra.CarrinhoDTO;
+import br.com.infoCenter.infra.ItemCarrinhoDTO;
 import br.com.infoCenter.infra.ClienteDTO;
 import br.com.infoCenter.infra.ProdutoDTO;
 import br.com.infoCenter.persistencia.CarrinhoDAO;
@@ -22,22 +23,22 @@ public class CarrinhoBO {
 		this.produtoDAO = produtoDAO;
 	}
 
-	public void incluirCarrinho(CarrinhoDTO carrinhoDTO) throws SQLException, CarrinhoException {
+	public void incluirItemNoCarrinho(ItemCarrinhoDTO itemCarrinhoDTO) throws SQLException, CarrinhoException {
 		
-		int qtdProduto = carrinhoDAO.getQtdProduto(carrinhoDTO);
+		int qtdProduto = carrinhoDAO.getQtdProduto(itemCarrinhoDTO);
 		
 		if (qtdProduto >= LIMITE_COMPRA) {
 			throw new CarrinhoException("O limite de compra é " + LIMITE_COMPRA + " quantidade(s) por produto");
 		}
 			
-		int qtdEstoque = (produtoDAO.getProdutoPorId(carrinhoDTO
+		int qtdEstoque = (produtoDAO.getProdutoPorId(itemCarrinhoDTO
 				.getIdProduto())).getQtdEstoque();
 
 		if (qtdProduto >= qtdEstoque) {
 			throw new CarrinhoException("No momento temos " + qtdEstoque + " unidade(s) no estoque!");
 		}
 			
-		carrinhoDAO.incluirCarrinho(carrinhoDTO);
+		carrinhoDAO.incluirItemNoCarrinho(itemCarrinhoDTO);
 		
 	}
 
@@ -45,11 +46,25 @@ public class CarrinhoBO {
 		return carrinhoDAO.getItensCarrinho(usuarioLogado.getIdCliente());
 	}
 	
-	public void apagarCarrinho(CarrinhoDTO carrinhoDTO) throws SQLException {
-		carrinhoDAO.apagarCarrinho(carrinhoDTO);
+	public void apagarCarrinho(ItemCarrinhoDTO carrinhoDTO) throws SQLException {
+		carrinhoDAO.apagarItemDoCarrinho(carrinhoDTO);
 	}
 	
-	public double buscarTotalCompra(ClienteDTO usuariologado) throws SQLException{
-		return carrinhoDAO.getTotalCompra(usuariologado.getIdCliente());
+	public double buscarTotalCompra(ClienteDTO usuarioLogado) throws SQLException{
+		return carrinhoDAO.getTotalCompra(usuarioLogado.getIdCliente());
+	}
+
+	public long efetuarCompra(ClienteDTO usuarioLogado) throws SQLException {
+		String stringFormatadaDtCompra = ((new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"))
+				.format(System.currentTimeMillis()));
+		return carrinhoDAO.efetuarCompra(usuarioLogado.getIdCliente(), stringFormatadaDtCompra);
+	}
+
+	public List<ProdutoDTO> buscarProdutosPagosPorNumPedido(long numPedido) throws SQLException {
+		return  carrinhoDAO.getProdutosPagosPorNumPedido(numPedido);
+	}
+
+	public double buscarTotalCompraPorNumPedido(long numPedido) throws SQLException {
+		return carrinhoDAO.getTotalCompraPorNumPedido(numPedido);
 	}
 }

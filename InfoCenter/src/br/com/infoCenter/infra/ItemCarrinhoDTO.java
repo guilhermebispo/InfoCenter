@@ -1,6 +1,6 @@
 package br.com.infoCenter.infra;
 
-public class CarrinhoDTO {
+public class ItemCarrinhoDTO {
 
 	private long idCarrinho;
 	private long idCliente;

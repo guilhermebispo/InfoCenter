@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import br.com.infoCenter.excecao.CarrinhoException;
-import br.com.infoCenter.infra.CarrinhoDTO;
+import br.com.infoCenter.infra.ItemCarrinhoDTO;
 import br.com.infoCenter.infra.ClienteDTO;
 import br.com.infoCenter.infra.ProdutoDTO;
 import br.com.infoCenter.negocio.CarrinhoBO;
@@ -56,9 +56,9 @@ public class VendaServlet extends HttpServlet {
 				req.getRequestDispatcher("login.jsp").forward(req, resp);
 	
 			} else if (acao.equals("incluirCarrinho")) {
-				CarrinhoDTO carrinhoDTO = buscarCarrinhoDTOPorRequest(req);
+				ItemCarrinhoDTO carrinhoDTO = buscarCarrinhoDTOPorRequest(req);
 				try {
-					carrinhoBO.incluirCarrinho(carrinhoDTO);
+					carrinhoBO.incluirItemNoCarrinho(carrinhoDTO);
 				} catch (CarrinhoException e) {
 					req.setAttribute("msg_erro", e.getMessage());
 				} finally{
@@ -73,7 +73,7 @@ public class VendaServlet extends HttpServlet {
 				req.getRequestDispatcher("_venda/carrinho_listar.jsp").forward(req,resp);
 	
 			} else if (acao.equals("apagarCarrinho")) {
-				CarrinhoDTO carrinhoDTO = buscarCarrinhoDTOPorRequest(req);
+				ItemCarrinhoDTO carrinhoDTO = buscarCarrinhoDTOPorRequest(req);
 				carrinhoBO.apagarCarrinho(carrinhoDTO);
 				req.getRequestDispatcher("venda?acao=listarCarrinho").forward(req, resp);
 			}
@@ -83,9 +83,9 @@ public class VendaServlet extends HttpServlet {
 		}
 	}
 
-	private CarrinhoDTO buscarCarrinhoDTOPorRequest (HttpServletRequest req){
+	private ItemCarrinhoDTO buscarCarrinhoDTOPorRequest (HttpServletRequest req){
 		ClienteDTO usuarioLogado = (ClienteDTO) req.getSession().getAttribute("usuarioLogado");
-		CarrinhoDTO carrinhoDTO = new CarrinhoDTO();
+		ItemCarrinhoDTO carrinhoDTO = new ItemCarrinhoDTO();
 		carrinhoDTO.setIdProduto(Integer.parseInt(req.getParameter("idProduto")));
 		carrinhoDTO.setQtdProduto(1);
 		carrinhoDTO.setIdCliente(usuarioLogado.getIdCliente());
