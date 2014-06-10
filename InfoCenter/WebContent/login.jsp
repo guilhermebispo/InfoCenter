@@ -25,7 +25,7 @@ $(document).ready(function() {
 	<jsp:include page="_template/template_cabecalho.jsp" />
 	<div class="1-content" align="center">
 	<h3 align="center" class="content-subhead">Login</h3>
-	<form class="pure-form" action="/InfoCenter/login" method="post">
+	<form id="formLogar" class="pure-form" action="/InfoCenter/login" method="post">
 		<fieldset class="pure-group">
 			<input type="hidden" value="logar" name="acao"></input> 
 			<input name="usuario" type="text" class="pure-input-1-4" placeholder="Usuário" required></input>

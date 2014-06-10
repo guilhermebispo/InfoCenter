@@ -87,14 +87,14 @@
 	
 	</div>
 	
-	<div class="pure-u-1-6 information-head" align="right">
-		<h5 class="information-head">
+	<div id="divUsuarioLogado" class="pure-u-1-6 information-head" align="right">
+		<span style="font-size:12px">
 		<%
 			if (usuarioLogado != null) {
 				out.print("Olá " + usuarioLogado.getNome() + "! <a href='/InfoCenter/login?acao=sair'>(Sair)</a>  ");
 			}
 		%>
-		</h5>
+		</span>
 	</div>
 	</div>
 	
