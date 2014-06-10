@@ -15,39 +15,28 @@
 	<div class="1-content" align="center">
 		<h3 align="center" class="content-subhead">Produtos a Venda</h3>
 		
-		<table width="95%" class="pure-table">
-			<thead>
-				<tr align="center">
-					<th>Código</th>
-					<th>Descrição</th>
-					<th>Marca</th>
-					<th>Fabricação</th>
-					<th>Valor Unitário</th>
-					<th>Ação</th>
-					<th>Carrinho</th>
-				</tr>
-			</thead>
-			<%
-				int alternarLinha = 1;
-				for (ProdutoDTO produto : produtos) {
-					if (alternarLinha == 1){
-						out.print("<tr>");
-					} else {
-						out.print("<tr class='pure-table-odd'>");
-					}
-					alternarLinha = alternarLinha * (-1);
-					out.print("<td>" + produto.getCodBarra() + "</td>");
-					out.print("<td>" + produto.getDescricao() + "</td>");
-					out.print("<td>" + produto.getMarca() + "</td>");
-					out.print("<td align='center'>" + produto.getDtFabricacao() + "</td>");
-					out.print("<td align='right'>R$ " + String.format("%.2f", produto.getValorProduto()) + "</td>");
-					out.print("<td align='center'><a href=/InfoCenter/venda?acao=incluirCarrinho&idProduto="
-							+ produto.getIdProduto() + ">Incluir Carrinho </a>");
-					out.print("<td>" + produto.getQtdItensCarrinho() + "</td>");
-					out.print("</tr>");
-				}
-			%>
-		</table>
+		<div class="l-content">
+			<div class="pricing-tables pure-g">
+				<% for (ProdutoDTO produto : produtos) { 
+					out.println("<div class='pure-u-1 pure-u-med-1-3'>");
+						out.println("<div class='pricing-table pricing-table-biz'>");
+							out.println("<div class='pricing-table-header'>");
+								out.println("<h2>" + produto.getDescricao() + "</h2>");
+								out.println("<span class='pricing-table-price'> R$ " + String.format("%.2f", produto.getValorProduto()) + "<span>" + produto.getMarca() + "</span></span>");
+							out.println("</div>");
+		
+							out.println("<ul class='pricing-table-list'>");
+								out.println("<li>Fabricação: " + produto.getDtFabricacao() + "</li>");
+								out.println("<li>Quantidade: " + produto.getQtdItensCarrinho() + "</li>");
+							out.println("</ul>");
+		
+							out.println("<a class='button-choose pure-button' href='/InfoCenter/venda?acao=incluirCarrinho&idProduto=" + produto.getIdProduto() + "'>Adicionar no Carrinho</a>");
+						out.println("</div>");
+					out.println("</div>");
+				 	}	%>
+	
+			</div>
+		</div>
 	</div>
 	<jsp:include page="../_template/template_rodape.jsp" />
 </body>
