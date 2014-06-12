@@ -7,7 +7,7 @@
 	<title>[InfoCenter] Rodapé</title>
 </head>
 <body>
-<div id="mensgaemErro">
+<div id="mensagemErro">
 	<h5>
 	<%
 		String msg_erro = (String) request.getAttribute("msg_erro"); 

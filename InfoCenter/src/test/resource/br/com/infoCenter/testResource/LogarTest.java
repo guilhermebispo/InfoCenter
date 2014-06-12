@@ -39,4 +39,16 @@ public class LogarTest {
 		
 	}
 
+	@Test
+	public void entrarComUsuarioInvalido() {
+
+		fluentDriver.input(By.name("usuario")).sendKeys("usuarioInvalido");
+		fluentDriver.input(By.name("senha")).sendKeys("!@#$%");
+		
+		fluentDriver.form(By.id("formLogar")).submit();
+		
+		fluentDriver.div(By.id("mensagemErro")).getText().shouldBe("Usuário ou senha inválidos!");
+		
+	}
+
 }
