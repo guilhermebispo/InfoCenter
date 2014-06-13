@@ -10,26 +10,26 @@ import org.seleniumhq.selenium.fluent.FluentWebDriver;
 
 public class LogarTest {
 
-	private WebDriver webDriver;
-	private FluentWebDriver fluentDriver; 
+	private static WebDriver webDriver;
 	
 	@Before
-	public void setUp() throws Exception {
-		webDriver = new FirefoxDriver();
-		webDriver.get("http://localhost:8080/InfoCenter/login.jsp");
-		fluentDriver = new FluentWebDriver(webDriver);
+	public void configurarRecursos() throws Exception {
+		webDriver = new FirefoxDriver();		
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void liberarRecursos() {
 		webDriver.close();
 	}
-
+	
 	@Test
 	public void entrarComUsuarioAdministradorValido() {
 
-		fluentDriver.input(By.name("usuario")).sendKeys("alan.saulo");
-		fluentDriver.input(By.name("senha")).sendKeys("senha111");
+		webDriver.get("http://localhost:8080/InfoCenter/login.jsp");
+		FluentWebDriver fluentDriver = new FluentWebDriver(webDriver);
+		
+		fluentDriver.form(By.id("formLogar")).input(By.name("usuario")).sendKeys("alan.saulo");
+		fluentDriver.form(By.id("formLogar")).input(By.name("senha")).sendKeys("senha111");
 		
 		fluentDriver.form(By.id("formLogar")).submit();
 		
@@ -39,9 +39,12 @@ public class LogarTest {
 
 	@Test
 	public void entrarComUsuarioInvalido() {
-
-		fluentDriver.input(By.name("usuario")).sendKeys("usuarioInvalido");
-		fluentDriver.input(By.name("senha")).sendKeys("!@#$%");
+		
+		webDriver.get("http://localhost:8080/InfoCenter/login.jsp");
+		FluentWebDriver fluentDriver = new FluentWebDriver(webDriver);
+		
+		fluentDriver.form(By.id("formLogar")).input(By.name("usuario")).sendKeys("usuarioInvalido");
+		fluentDriver.form(By.id("formLogar")).input(By.name("senha")).sendKeys("!@#$%");
 		
 		fluentDriver.form(By.id("formLogar")).submit();
 		
