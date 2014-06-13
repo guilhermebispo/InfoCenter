@@ -2,13 +2,11 @@ package br.com.infoCenter.apresentacao;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import br.com.infoCenter.infra.ClienteDTO;
 import br.com.infoCenter.negocio.CarrinhoBO;
